@@ -1,20 +1,25 @@
-# Use official Node.js LTS image
-FROM node:lts
+# Use lightweight Node.js runtime
+FROM node:20-alpine
 
-# Create app directory
-WORKDIR /simple-node-api
+# Set working directory
+WORKDIR /app
 
-# Copy package.json and package-lock.json if available
-COPY package*.json ./
+# Set env to production
+ENV NODE_ENV=production
 
 # Install dependencies
-RUN npm install
+COPY package*.json ./
+RUN npm ci --omit=dev
 
-# Copy the rest of your application code
+# Copy app source
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 4000
+# Drop privileges to non-root user provided by the base image
+RUN chown -R node:node /app
+USER node
 
-# Run the app
-CMD ["node", "index.js"]
+# Expose the app port
+EXPOSE 3000
+
+# Start the server
+CMD ["node", "server.js"]

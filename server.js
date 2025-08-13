@@ -1,54 +1,59 @@
-const express = require('express');
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+
 const app = express();
+const PORT = process.env.PORT || 3000;
 
+// Middleware
+app.use(cors());
 app.use(express.json());
+app.use(express.static("public"));
 
-let users = [
-  
-];
-
-app.get('/api/users', (req, res) => {
-  res.json(users);
+// API Routes
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "Server is running!",
+    timestamp: new Date().toISOString(),
+  });
 });
 
-app.get('/api/users/:id', (req, res) => {
-  const user = users.find(u => u.id === parseInt(req.params.id));
-  if (!user) return res.status(404).send("User not found");
-  res.json(user);
+app.get("/api/data", (req, res) => {
+  res.json({
+    message: "Hello from the backend!",
+    data: [
+      { id: 1, name: "Item 1", description: "This is the first item" },
+      { id: 2, name: "Item 2", description: "This is the second item" },
+      { id: 3, name: "Item 3", description: "This is the third item" },
+    ],
+    server_info: {
+      node_version: process.version,
+      platform: process.platform,
+      uptime: process.uptime(),
+    },
+  });
 });
 
-app.post('/api/users', (req, res) => {
-  const { name, email } = req.body;
-  const newUser = {
-    id: users.length + 1,
-    name,
-    email
-  };
-  users.push(newUser);
-  res.status(201).json(newUser);
+app.post("/api/message", (req, res) => {
+  const { message } = req.body;
+  res.json({
+    received: message,
+    response: `Server received: "${message}"`,
+    timestamp: new Date().toISOString(),
+  });
 });
 
-app.put('/api/users/:id', (req, res) => {
-  const user = users.find(u => u.id === parseInt(req.params.id));
-  if (!user) return res.status(404).send("User not found");
-
-  const { name, email } = req.body;
-  user.name = name || user.name;
-  user.email = email || user.email;
-
-  res.json(user);
+// Serve frontend
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.delete('/api/users/:id', (req, res) => {
-  const index = users.findIndex(u => u.id === parseInt(req.params.id));
-  if (index === -1) return res.status(404).send("User not found");
-
-  const deletedUser = users.splice(index, 1);
-  res.json(deletedUser[0]);
+// Start server
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
+  console.log(`📱 Access the app at: http://localhost:${PORT}`);
+  console.log(
+    `⚡ API endpoints available at /api/health, /api/data, /api/message`
+  );
 });
-
-const PORT = 8000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-

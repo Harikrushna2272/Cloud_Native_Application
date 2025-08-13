@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #e8f5e8;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background: #4caf50;
+            border-radius: 50%;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .section h2 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            min-width: 200px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .output {
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 100px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+
+        .data-grid {
+            display: grid;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .data-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-item h3 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .data-item p {
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .server-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .value {
+            color: #333;
+            font-family: monospace;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            input[type="text"] {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🚀 Simple App</h1>
+
+        <div class="status">
+            <div class="status-dot"></div>
+            <span>Server is running and ready!</span>
+        </div>
+
+        <div class="section">
+            <h2>📊 Fetch Data from Backend</h2>
+            <button onclick="fetchData()">Get Data</button>
+            <button onclick="checkHealth()">Check Server Health</button>
+            <div id="dataOutput" class="output">Click "Get Data" to fetch information from the backend API...</div>
+        </div>
+
+        <div class="section">
+            <h2>💬 Send Message to Backend</h2>
+            <div class="input-group">
+                <input type="text" id="messageInput" placeholder="Type your message here..." />
+                <button onclick="sendMessage()">Send Message</button>
+            </div>
+            <div id="messageOutput" class="output">Send a message to see the server response...</div>
+        </div>
+
+        <div class="section">
+            <h2>ℹ️ Application Info</h2>
+            <div class="server-info">
+                <div class="info-item">
+                    <span class="label">Frontend:</span>
+                    <span class="value">HTML5 + Vanilla JavaScript</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Backend:</span>
+                    <span class="value">Node.js + Express</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Port:</span>
+                    <span class="value">3000</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Deployment:</span>
+                    <span class="value">Deployment Ready</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add enter key support for message input
+        document.getElementById('messageInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        async function fetchData() {
+            const output = document.getElementById('dataOutput');
+            output.textContent = 'Loading...';
+
+            try {
+                const response = await fetch('/api/data');
+                const data = await response.json();
+
+                // Create a nice display for the data
+                let html = '<div class="data-grid">';
+                data.data.forEach(item => {
+                    html += `
+                        <div class="data-item">
+                            <h3>${item.name}</h3>
+                            <p><strong>ID:</strong> ${item.id}</p>
+                            <p><strong>Description:</strong> ${item.description}</p>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+
+                html += `
+                    <div class="server-info">
+                        <h3>Server Information</h3>
+                        <div class="info-item">
+                            <span class="label">Node Version:</span>
+                            <span class="value">${data.server_info.node_version}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Platform:</span>
+                            <span class="value">${data.server_info.platform}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Uptime:</span>
+                            <span class="value">${Math.round(data.server_info.uptime)} seconds</span>
+                        </div>
+                    </div>
+                `;
+
+                output.innerHTML = html;
+            } catch (error) {
+                output.textContent = `Error: ${error.message}`;
+                output.style.color = '#dc3545';
+            }
+        }
+
+        async function checkHealth() {
+            const output = document.getElementById('dataOutput');
+            output.textContent = 'Checking server health...';
+
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+
+                output.innerHTML = `
+                    <div style="color: #28a745;">
+                        <h3>✅ Server Health Check</h3>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
+                    </div>
+                `;
+            } catch (error) {
+                output.innerHTML = `<div style="color: #dc3545;">❌ Server Health Check Failed: ${error.message}</div>`;
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const output = document.getElementById('messageOutput');
+            const message = input.value.trim();
+
+            if (!message) {
+                output.textContent = 'Please enter a message first.';
+                output.style.color = '#ffc107';
+                return;
+            }
+
+            output.textContent = 'Sending message...';
+            output.style.color = '#333';
+
+            try {
+                const response = await fetch('/api/message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message }),
+                });
+
+                const data = await response.json();
+
+                output.innerHTML = `
+                    <div style="color: #28a745;">
+                        <h3>📨 Message Sent Successfully!</h3>
+                        <p><strong>Your Message:</strong> "${data.received}"</p>
+                        <p><strong>Server Response:</strong> ${data.response}</p>
+                        <p><strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
+                    </div>
+                `;
+
+                input.value = '';
+            } catch (error) {
+                output.innerHTML = `<div style="color: #dc3545;">❌ Error sending message: ${error.message}</div>`;
+            }
+        }
+
+        // Auto-load data when page loads
+        window.addEventListener('load', function () {
+            setTimeout(checkHealth, 1000);
+        });
+    </script>
+</body>
+
+</html>
