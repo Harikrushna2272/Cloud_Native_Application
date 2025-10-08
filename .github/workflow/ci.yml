@@ -44,9 +44,8 @@
 #           labels: ${{ steps.meta.outputs.labels }}
 
 
-name: Docker CI
+name: Docker CIname: Docker CI
 
-# Trigger on pushes and pull requests to main
 on:
   push:
     branches: [ main ]
@@ -58,15 +57,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
       - name: Checkout code
         uses: actions/checkout@v4
-
-      # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      # Step 3: Build Docker image
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
@@ -74,11 +68,13 @@ jobs:
           file: Dockerfile
           push: false
           tags: myapp:latest
-
-      # Step 4: Test the Docker container
       - name: Test Docker container
         run: |
+          echo "Starting container..."
           docker run -d -p 3000:3000 --name myapp myapp:latest
-          sleep 5  # Wait for server to start
-          curl -f http://localhost:3000/api/health || exit 1
+          echo "Waiting for server to start..."
+          sleep 10
+          echo "Checking /api/health endpoint..."
+          curl -v -f http://localhost:3000/api/health || { echo "Health check failed"; docker logs myapp; exit 1; }
+          echo "Stopping container..."
           docker stop myapp
