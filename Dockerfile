@@ -14,9 +14,9 @@ RUN npm ci --omit=dev
 # Copy app source
 COPY . .
 
-# Drop privileges to non-root user provided by the base image
-RUN chown -R node:node /app
-USER node
+# # Drop privileges to non-root user provided by the base image
+# RUN chown -R node:node /app
+# USER node
 
 # Expose the app port
 EXPOSE 3000
